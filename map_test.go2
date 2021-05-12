@@ -1,0 +1,20 @@
+package ff
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/retrogen/ff/assert"
+)
+
+func TestMap(t *testing.T) {
+	input := []int{1, 2, 3, 4, 5}
+
+	actual := Map(input, func(n int) string {
+		return strings.Repeat("a", n)
+	})
+
+	expected := []string{"a", "aa", "aaa", "aaaa", "aaaaa"}
+
+	assert.SliceEqual(t, expected, actual)
+}

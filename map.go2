@@ -1,0 +1,10 @@
+package ff
+
+// Map turns a []T to a []V using a mapping function.
+func Map[T, V any](s []T, f func(T) V) []V {
+	r := make([]V, len(s))
+	for i, v := range s {
+		r[i] = f(v)
+	}
+	return r
+}

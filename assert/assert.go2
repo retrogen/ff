@@ -1,0 +1,75 @@
+package assert
+
+import "testing"
+
+
+func eq[T comparable](a, b T) bool {
+	return a == b
+}
+
+func Equal[T comparable](t *testing.T, expected, actual T) {
+	t.Helper()
+	EqualFn(t, expected, actual, eq[T])
+}
+
+func SliceEqual[T comparable](t *testing.T, expected, actual []T) {
+	t.Helper()
+	Equalf(t, len(expected), len(actual), "slice lengths are not equal")
+
+	for i := range expected {
+		EqualFn(t, expected[i], actual[i], eq[T])
+	}
+}
+
+func Equalf[T comparable](t *testing.T, expected, actual T, f string, args ...interface{}) {
+	t.Helper()
+	EqualFnf(t, expected, actual, eq[T], f, args...)
+}
+
+func EqualFn[T any](t *testing.T, expected, actual T, cmp func(a, b T) bool) {
+	t.Helper()
+	EqualFnf(t, expected, actual, cmp, "expected %v, actual %v", expected, actual)
+}
+
+func EqualFnf[T any](t *testing.T, expected, actual T, cmp func(a, b T) bool, f string, args ...interface{}) {
+	t.Helper()
+	if !cmp(expected, actual) {
+		t.Fatalf(f, args...)
+	}
+}
+
+func NotEqual[T comparable](t *testing.T, expected, actual T) {
+	t.Helper()
+	NotEqualFn(t, expected, actual, eq[T])
+}
+
+func NotEqualf[T comparable](t *testing.T, expected, actual T, f string, args ...interface{}) {
+	t.Helper()
+	NotEqualFnf(t, expected, actual, eq[T], f, args...)
+}
+
+func NotEqualFn[T any](t *testing.T, expected, actual T, cmp func(a, b T) bool) {
+	t.Helper()
+	NotEqualFnf(t, expected, actual, cmp, "expected not equal to %v, actual %v", expected, actual)
+}
+
+func NotEqualFnf[T any](t *testing.T, expected, actual T, cmp func(a, b T) bool, f string, args ...interface{}) {
+	t.Helper()
+	if cmp(expected, actual) {
+		t.Fatalf(f, args...)
+	}
+}
+
+func False(t *testing.T, b bool) {
+	t.Helper()
+	if b {
+		t.Fatalf("expected false")
+	}
+}
+
+func True(t *testing.T, b bool) {
+	t.Helper()
+	if !b {
+		t.Fatalf("expected true")
+	}
+}
